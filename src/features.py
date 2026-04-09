@@ -27,3 +27,27 @@ def add_technical_indicators(series):
 def create_target(df, horizon=5):
 
     return df.ffill().pct_change(horizon).shift(-horizon)
+
+def add_global_features(df):
+    df = df.copy()
+    
+    # 
+    df['ret_1d'] = df.groupby('Ticker')['Close'].ffill().transform(lambda x: x.pct_change())
+    df['vol_20'] = df.groupby('Ticker')['ret_1d'].transform(lambda x: x.rolling(20).std())
+    df['rsi_14'] = df.groupby('Ticker')['Close'].transform(lambda x: calculate_rsi_series(x))
+    
+    df['ema_200'] = df.groupby('Ticker')['Close'].transform(lambda x: x.ewm(span=200).mean())
+    df['dist_ema_200'] = (df['Close'] - df['ema_200']) / df['ema_200']
+    
+    df['target'] = df.groupby('Ticker')['ret_1d'].transform(lambda x: x.shift(-5).rolling(5).sum())
+    
+    df['Ticker_Cat'] = df['Ticker'].astype('category').cat.codes
+    
+    return df.dropna()
+
+def calculate_rsi_series(series, period=14):
+    delta = series.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
