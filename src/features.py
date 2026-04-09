@@ -9,10 +9,11 @@ def add_technical_indicators(series):
     df = series.to_frame(name='Close')
     
 
-    df['ret_1d'] = df['Close'].pct_change()
-    df['ret_5d'] = df['Close'].pct_change(5)
+    df['ret_1d'] = df['Close'].ffill().pct_change()
+    df['ret_5d'] = df['Close'].ffill().pct_change(5)
     df['vol_20'] = df['ret_1d'].rolling(window=20).std()
-    
+    df['ema_200'] = df['Close'].ewm(span=200).mean()
+    df['dist_ema_200'] = (df['Close'] - df['ema_200']) / df['ema_200']
 
     delta = df['Close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
@@ -25,4 +26,4 @@ def add_technical_indicators(series):
 
 def create_target(df, horizon=5):
 
-    return df.pct_change(horizon).shift(-horizon)
+    return df.ffill().pct_change(horizon).shift(-horizon)
