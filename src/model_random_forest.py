@@ -17,7 +17,7 @@ class StockModel:
         r2 = r2_score(y_test, predictions)
         return {"MSE": mse, "R2": r2}
     def save(self, path):
-        joblib.dump(self.model, path)
+        joblib.dump(self.model, path,compress=3)
         print(f"Model saved in: {path}")
 
     @staticmethod

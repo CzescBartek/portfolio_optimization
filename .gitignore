@@ -3,3 +3,4 @@ src/portfolio_manager.py
 src/live_predictor.py
 data/active_trades.json
 src/verify_strategy.py
+models/global_rf_model.joblib

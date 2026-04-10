@@ -6,11 +6,12 @@ import joblib
 class XGBStockModel:
     def __init__(self):
         self.model = XGBRegressor(
-            n_estimators=200,
-            learning_rate=0.03,
-            max_depth=4,
-            subsample=0.8,
-            colsample_bytree=0.8,
+            n_estimators=500,
+            learning_rate=0.01,
+            max_depth=3,
+            subsample=0.7,
+            colsample_bytree=0.7,
+            reg_lambda=10,
             random_state=42
         )
 

@@ -9,9 +9,18 @@ from src.optimizer import PortfolioOptimizer
 from src.backtester import Backtester
 from src.model_random_forest import StockModel
 
-TICKERS = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NFLX']
+TICKERS = ['AAPL', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NFLX','GLD','TLT', 'SHY']
 for folder in ['models', 'plots']:
     if not os.path.exists(folder): os.makedirs(folder)
+
+features_to_use = [
+    'rsi_14', 
+    'vol_20', 
+    'relative_volatility',  
+    'alpha_5d',             
+    'dist_ema_200', 
+    'Ticker_Cat'            
+]
 
 raw_global_df = get_global_data(TICKERS)
 global_df = add_global_features(raw_global_df)
@@ -20,9 +29,14 @@ split_date = global_df.index.max() - pd.Timedelta(days=180)
 train_df = global_df[global_df.index < split_date]
 test_df = global_df[global_df.index >= split_date]
 
-features = ['rsi_14', 'vol_20', 'ema_200', 'dist_ema_200', 'Ticker_Cat']
-X_train, y_train = train_df[features], train_df['target']
-X_test, y_test = test_df[features], test_df['target']
+train_df = global_df[global_df.index < split_date]
+test_df = global_df[global_df.index >= split_date]
+
+X_train = train_df[features_to_use]
+y_train = train_df['target']
+
+X_test = test_df[features_to_use]
+y_test = test_df['target']
 
 
 print("Training global XGBoost...")
@@ -36,7 +50,7 @@ model_rf.train(X_train, y_train)
 model_rf.save('models/global_rf_model.joblib')
 
 latest_data = global_df.groupby('Ticker').tail(1)
-X_latest = latest_data[features]
+X_latest = latest_data[features_to_use]
 
 preds_rf = dict(zip(latest_data['Ticker'], model_rf.predict(X_latest)))
 preds_xgb = dict(zip(latest_data['Ticker'], model_xgb.predict(X_latest)))
