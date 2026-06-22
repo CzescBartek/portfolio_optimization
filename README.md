@@ -1,6 +1,6 @@
 # 📈 Multi-Asset Quantitative Strategy & Portfolio Optimization
 
-A professional-grade Machine Learning pipeline designed to predict stock returns and optimize asset allocation using Global Panel Data, Gradient Boosting (XGBoost), and Explainable AI (XAI).
+A Machine Learning pipeline designed to predict stock returns and optimize asset allocation using Global Panel Data, Gradient Boosting (XGBoost), and Explainable AI (XAI).
 
 ## 🌟 Key Features
 * **Global Model Architecture:** Trains on 100,000+ data points across multiple sectors to learn universal market dynamics instead of ticker-specific noise.
@@ -33,7 +33,6 @@ The system evaluates two distinct architectures. By introducing `alpha_5d` and `
 | **Market Correlation** | High (Beta ~1.1) | **Low (Beta ~0.4)** | **XGBoost** |
 | **Safe Haven Allocation**| Static | **Dynamic (Up to 80%)** | **XGBoost** |
 
-**Quant Insight:** The XGBoost model successfully captured cross-sectional momentum. During the Q1 2026 market correction, the model generated substantial Alpha by automatically rotating the portfolio into **GLD** and **TLT**, effectively hedging against tech sector volatility.
 
 ### Strategy Visualization
 
